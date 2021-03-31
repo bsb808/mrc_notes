@@ -1,0 +1,31 @@
+# Persistent Storage
+
+cd ~/Downloads
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
+unzip awscliv2.zip
+
+valid_users = [
+  'bbingham',
+  'mrmccarr',
+  'alexander.fedorovich',
+  'kbhan',
+  'samuel.royster',
+  'jun.zhang.sn'
+]
+
+$ aws configure
+
+Enter Access Key: KEY
+Enter Secret Access Key: PRIVATE_KEY
+default/None for the others, just pressing enter enter is fine
+
+# Fetch
+USERDIR="./nps-cloudsim"
+
+aws s3 sync s3://nps-cloudsim ${USERDIR}
+
+
+# Push
+aws s3 sync {user_dir} s3://nps-cloudsim/{args.username} {delete_string}
+
+aws s3 sync ./nps-cloudsim s3://nps-cloudsim/
