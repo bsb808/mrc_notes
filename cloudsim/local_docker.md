@@ -10,49 +10,56 @@ https://hub.docker.com/r/tfoote/test_novnc/tags?page=1&ordering=last_updated
 docker pull tfoote/test_novnc:latest
 ```
 
-## Build with script
-* Get the `Dockerfile` and `build.bash` script from the git repo at https://github.com/tfoote/test_novnc. 
+## Build with docker image 
+
+Get the `Dockerfile` and from the git repo at https://github.com/tfoote/test_novnc. 
 
 ```
 git clone git@github.com:tfoote/test_novnc.git
 ```
-* Run the script `build.bash` script to generate and run a local `novnc` image.
+
+Build the image and tag it specifically as a tag that differentiates it from the downloaded image.  
 ```
-cd test_novnc
-bash build.bash
+docker build --tag test_novnc:local_latest ./
 ```
-The script does the following:
-* Builds the base image and names it `test_novnc`
-* Creates and activates a python3 virtual environment called `test_novnc_venv` stored at `/tmp/test_novnc_venv`
-* Installs the cuda-enabled branch of `rocker` and the main branch of `novnc-rocker`
-* Calls `rocker` to inject layers for enabling support for cuda and nvidia, enables novnc and turbovnc, and turns on local user mode with the developer user. 
+
+## Run a local image
 
 
-## (TODO) How to add new features to the image
+If not done previously, setup a virtual env
 
-Following the instructions above generates a docker image tagged as `test_novnc:latest`.   Here we want to make incremental changes to the `Dockerfile` and rebuild an image, calling it `test_novnc:prototype` and then test the new features, while not modifying the `test_novnc:latest` so that we can work with both images - preseving access `test_novnc:latest` helps with reproducing what the students see.
-
-1. Create a branch of https://github.com/tfoote/test_novnc
-1. Make changes to Dockerfile
-1. Rebuild from the Dockerfile `docker build . -t test_novnc:prototype`
-1. Don't use the `build.bash` file, but instead start the container using a command such as...
 ```
-IMAGE="test_novnc:prototype"
+mkdir -p /tmp/test_novnc_venv
+python3 -m venv /tmp/test_novnc_venv
+```
+
+Activate and install wheel, the cuda-enabled branch of `rocker` and the main branch of `novnc-rocker`
+```
+. /tmp/test_novnc_venv/bin/activate
+pip install wheel
+pip install -U git+https://github.com/osrf/rocker.git@cuda
+pip install -U git+https://github.com/tfoote/novnc-rocker.git@main
+```
+
+Specify the desired image and run with rocker
+
+```
+IMAGE="test_novnc:local_latest"
 rocker --cuda --nvidia --novnc --turbovnc --user --user-override-name=developer ${IMAGE}
 ```
 
-## Login via browser
-
-Go to [http://localhost:8080/vnc.html](http://localhost:8080/vnc.html)
+Finally open the UI in a browser: [http://localhost:8080/vnc.html](http://localhost:8080/vnc.html)
 
 username and password are
 
 `testuser:testpassword`
 
-## FAQ
+## How to add new features to the image
 
-### Question: What is the difference between `test_novnc` and `test_novnc:latest`?
+Following the instructions above generates a docker image tagged as `test_novnc:local_latest`.   Here we want to make incremental changes to the `Dockerfile` and rebuild an image, calling it `test_novnc:local_prototype` and then test the new features, while not modifying the `test_novnc:local_latest` so that we can work with both images - preseving access `test_novnc:local_latest` helps with reproducing what the students see.
 
-### Answer:
-There is no difference. The `latest` tag is a special Docker default that is always used when no tag is specified. 
-
+1. Create a branch of https://github.com/tfoote/test_novnc
+1. Make changes to Dockerfile
+1. Rebuild from the Dockerfile `docker build . -t test_novnc:local_prototype`
+1. Test the image locally
+1. Push a PR
