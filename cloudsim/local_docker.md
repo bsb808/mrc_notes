@@ -27,7 +27,6 @@ The script does the following:
 * Installs the cuda-enabled branch of `rocker` and the main branch of `novnc-rocker`
 * Calls `rocker` to inject layers for enabling support for cuda and nvidia, enables novnc and turbovnc, and turns on local user mode with the developer user. 
 
-???: In the bash script it runs the image `test_novnc`.  I would have expected the image to be explicitly `test_novnc:latest`
 
 ## (TODO) How to add new features to the image
 
@@ -42,8 +41,6 @@ IMAGE="test_novnc:prototype"
 rocker --cuda --nvidia --novnc --turbovnc --user --user-override-name=developer ${IMAGE}
 ```
 
-
-
 ## Login via browser
 
 Go to [http://localhost:8080/vnc.html](http://localhost:8080/vnc.html)
@@ -51,4 +48,11 @@ Go to [http://localhost:8080/vnc.html](http://localhost:8080/vnc.html)
 username and password are
 
 `testuser:testpassword`
+
+## FAQ
+
+### Question: What is the difference between `test_novnc` and `test_novnc:latest`?
+
+### Answer:
+There is no difference. The `latest` tag is a special Docker default that is always used when no tag is specified. 
 
