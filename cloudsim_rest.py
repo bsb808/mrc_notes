@@ -38,6 +38,9 @@ def status_iterator(token, groupid, terminate_str):
         
         status_str = newstatus_str
         time.sleep(2)
+        
+    sys.stdout.write("\n")
+    sys.stdout.flush()
     
 
 valid_commands = ['start', 'status', 'stop', 'stopall']
@@ -73,6 +76,18 @@ if ( (args.command == 'stop') or args.command == 'status'):
         out, err = p.communicate()
         print out
     status_iterator(token, groupid, "Address has been acquired.")
+
+elif args.command == 'stopall':
+    print ("Stopping all images..")
+    stopall_cmd = "curl -X POST -H \"Private-Token: %s\" https://staging-cloudsim-nps.ignitionrobotics.org/1.0/stop/all"%token
+    print stopall_cmd
+    p = subprocess.Popen(stopall_cmd, shell=True, executable='/bin/bash' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    print out
+    if os.path.isfile(gid_fname):
+        print ""
+        print "Removing file <%s>"%gid_fname
+        os.remove(gid_fname)
 
     
 elif args.command == 'start':
