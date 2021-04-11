@@ -21,21 +21,21 @@ def status_iterator(token, groupid, terminate_str):
         statusd = json.loads(status)
         newstatus_str = statusd['status']
         if newstatus_str == status_str:
-            msg = "\b%s"%(chcycle.next())
-            sys.stdout.write(msg)
-            sys.stdout.flush()
+            sys.stdout.write("\r")
         else:
-            if "Address has been acquired." in newstatus_str:
-                msg = "\n[%7.1f]\t Status <%s> uri <%s> %s"%(time.time()-t0, 
-                                                             newstatus_str,
-                                                             statusd['uri'],
-                                                             chcycle.next())
-            else:
-                msg = "\n[%7.1f]\t Status <%s> %s"%(time.time()-t0, 
-                                                    newstatus_str,
-                                                    chcycle.next())
-            sys.stdout.write(msg)
-            sys.stdout.flush()
+            sys.stdout.write("\n")
+        if "Address has been acquired." in newstatus_str:
+            msg = "[%7.1f]\t Status <%s> uri <%s> %s"%(time.time()-t0, 
+                                                         newstatus_str,
+                                                         statusd['uri'],
+                                                         chcycle.next())
+        else:
+            msg = "[%7.1f]\t Status <%s> %s"%(time.time()-t0, 
+                                                newstatus_str,
+                                                chcycle.next())
+        sys.stdout.write(msg)
+        sys.stdout.flush()
+        
         status_str = newstatus_str
         time.sleep(2)
     
