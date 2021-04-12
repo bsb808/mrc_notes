@@ -50,16 +50,22 @@ parser.add_argument('command', type=str, choices=valid_commands)
 
 args = parser.parse_args()
 
-token = os.environ.get('TOKEN')
-
-if token is None:
-    print "Must have an environmental value <TOKEN> with your Cloudsim access token in order to proceed"
-    sys.exit(1)
-
+# Image name
 image = "tfoote/test_novnc:main"
 
-# File name for storing group ids
+# Get token from file
 home = os.environ.get("HOME")
+token_fname = os.path.join(home,'.cloudsim_token')
+if not os.path.isfile(token_fname):
+    print "You need to save your cloudsim token as the file <%s>"%token_fname
+    sys.exit(1)
+
+with open(token_fname) as f:
+    token = f.readline().strip()
+
+print "Using access token <%s>"%(token)
+
+# File name for storing group ids
 gid_fname = os.path.join(home,'.cloudsim_groupid')
 
 if ( (args.command == 'stop') or args.command == 'status'):
