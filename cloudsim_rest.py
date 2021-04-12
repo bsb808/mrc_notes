@@ -11,6 +11,7 @@ import json
 def status_iterator(token, groupid, terminate_str):
     # Loop while starting up.
     t0 = time.time()
+    t1 = t0
     status_cmd = "curl -X GET -H \"Private-Token: %s\" https://staging-cloudsim-nps.ignitionrobotics.org/1.0/simulations/%s"%(token, groupid)
     status_str = ""
     chcycle = cycle(["-","/","-","\\"])
@@ -24,15 +25,18 @@ def status_iterator(token, groupid, terminate_str):
             sys.stdout.write("\r")
         else:
             sys.stdout.write("\n")
+            t1 = time.time()
         if "Address has been acquired." in newstatus_str:
-            msg = "[%7.1f]\t Status <%s> uri <%s> %s"%(time.time()-t0, 
-                                                         newstatus_str,
-                                                         statusd['uri'],
-                                                         chcycle.next())
+            msg = "[%7.1f, %7.1f]\t Status <%s> uri <%s> %s"%(time.time()-t0,
+                                                              time.time()-t1,
+                                                              newstatus_str,
+                                                              statusd['uri'],
+                                                              chcycle.next())
         else:
-            msg = "[%7.1f]\t Status <%s> %s"%(time.time()-t0, 
-                                                newstatus_str,
-                                                chcycle.next())
+            msg = "[%7.1f, %7.1f]\t Status <%s> %s"%(time.time()-t0,
+                                              time.time()-t1,
+                                              newstatus_str,
+                                              chcycle.next())
         sys.stdout.write(msg)
         sys.stdout.flush()
         
