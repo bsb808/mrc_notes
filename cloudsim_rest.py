@@ -26,7 +26,7 @@ def status_iterator(token, groupid, terminate_str):
         else:
             sys.stdout.write("\n")
             t1 = time.time()
-        if "Address has been acquired." in newstatus_str:
+        if "running" in newstatus_str:
             msg = "[%7.1f, %7.1f]\t Status <%s> uri <%s> %s"%(time.time()-t0,
                                                               time.time()-t1,
                                                               newstatus_str,
@@ -61,6 +61,9 @@ args = parser.parse_args()
 image = "learninglab/me4823:matlab_small"
 name = "4823matlabsmall"
 
+#image = "learninglab/me4823:main"
+#name = "4823main"
+
 # Get token from file
 home = os.environ.get("HOME")
 token_fname = os.path.join(home,'.cloudsim_token')
@@ -89,7 +92,7 @@ if ( (args.command == 'stop') or args.command == 'status'):
         p = subprocess.Popen(stop_cmd, shell=True, executable='/bin/bash' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
         print out
-    status_iterator(token, groupid, "Address has been acquired.")
+    status_iterator(token, groupid, "running")
 
 elif args.command == 'stopall':
     print ("Stopping all images..")
@@ -113,12 +116,18 @@ elif args.command == 'start':
     print out
     outd = json.loads(out)
 
-    groupid = outd['Simulation']['groupid']
+    success = False
+    try:
+        groupid = outd['Simulation']['groupid']
+        success = True
+    except KeyError:
+        print("WARNING:  Looks ike the simulation didn't start!")
 
-    # Save as a one line text file
-    with open(gid_fname, 'a') as f:
-        f.write(groupid +  "\n")
-    print("Appended groupid <%s> to <%s>"%(groupid,gid_fname))
-
-    status_iterator(token, groupid, "Address has been acquired.")
+    if success:
+        # Save as a one line text file
+        with open(gid_fname, 'a') as f:
+            f.write(groupid +  "\n")
+        print("Appended groupid <%s> to <%s>"%(groupid,gid_fname))
+        
+        status_iterator(token, groupid, "running")
 
