@@ -61,8 +61,8 @@ args = parser.parse_args()
 image = "learninglab/me4823:matlab_small"
 name = "4823matlabsmall"
 
-#image = "learninglab/me4823:main"
-#name = "4823main"
+image = "learninglab/me4823:main"
+name = "4823main"
 
 # Get token from file
 home = os.environ.get("HOME")
