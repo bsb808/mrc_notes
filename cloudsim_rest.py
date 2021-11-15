@@ -61,8 +61,8 @@ args = parser.parse_args()
 image = "learninglab/me4823:matlab_small"
 name = "4823matlabsmall"
 
-image = "learninglab/me4823:main"
-name = "4823main"
+#image = "learninglab/me4823:main"
+#name = "4823main"
 
 # Get token from file
 home = os.environ.get("HOME")
@@ -111,6 +111,7 @@ elif args.command == 'stopall':
 elif args.command == 'start':
     start_cmd = "curl -X POST -H \"Private-Token: %s\" https://staging-cloudsim-nps.ignitionrobotics.org/1.0/start -F \"image=%s\" -F \"name=%s\""%(token, image, name)
     print("Starting new image")
+    print("Starting new instance using image <%s>"%image)
     #print start_cmd
     p = subprocess.Popen(start_cmd, shell=True, executable='/bin/bash' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
