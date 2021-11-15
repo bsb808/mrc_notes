@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -31,12 +31,12 @@ def status_iterator(token, groupid, terminate_str):
                                                               time.time()-t1,
                                                               newstatus_str,
                                                               statusd['uri'],
-                                                              chcycle.next())
+                                                              next(chcycle))
         else:
             msg = "[%7.1f, %7.1f]\t Status <%s> %s"%(time.time()-t0,
-                                              time.time()-t1,
-                                              newstatus_str,
-                                              chcycle.next())
+                                                     time.time()-t1,
+                                                     newstatus_str,
+                                                     next(chcycle))
         sys.stdout.write(msg)
         sys.stdout.flush()
         
@@ -68,13 +68,13 @@ name = "4823main"
 home = os.environ.get("HOME")
 token_fname = os.path.join(home,'.cloudsim_token')
 if not os.path.isfile(token_fname):
-    print "You need to save your cloudsim token as the file <%s>"%token_fname
+    print("You need to save your cloudsim token as the file <%s>"%token_fname)
     sys.exit(1)
 
 with open(token_fname) as f:
     token = f.readline().strip()
 
-print "Using access token <%s>"%(token)
+print("Using access token <%s>"%(token))
 
 # File name for storing group ids
 gid_fname = os.path.join(home,'.cloudsim_groupid')
@@ -91,29 +91,30 @@ if ( (args.command == 'stop') or args.command == 'status'):
         stop_cmd = "curl -X POST -H \"Private-Token: %s\" https://staging-cloudsim-nps.ignitionrobotics.org/1.0/stop/%s"%(token, groupid)
         p = subprocess.Popen(stop_cmd, shell=True, executable='/bin/bash' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
-        print out
+        print(out)
+        
     status_iterator(token, groupid, "running")
 
 elif args.command == 'stopall':
     print ("Stopping all images..")
     stopall_cmd = "curl -X POST -H \"Private-Token: %s\" https://staging-cloudsim-nps.ignitionrobotics.org/1.0/stop/all"%token
-    print stopall_cmd
+    print(stopall_cmd)
     p = subprocess.Popen(stopall_cmd, shell=True, executable='/bin/bash' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
-    print out
+    print(out)
     if os.path.isfile(gid_fname):
-        print ""
-        print "Removing file <%s>"%gid_fname
+        print("")
+        print("Removing file <%s>"%gid_fname)
         os.remove(gid_fname)
 
     
 elif args.command == 'start':
     start_cmd = "curl -X POST -H \"Private-Token: %s\" https://staging-cloudsim-nps.ignitionrobotics.org/1.0/start -F \"image=%s\" -F \"name=%s\""%(token, image, name)
-    print "Starting new image"
+    print("Starting new image")
     #print start_cmd
     p = subprocess.Popen(start_cmd, shell=True, executable='/bin/bash' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
-    print out
+    print(out)
     outd = json.loads(out)
 
     success = False
