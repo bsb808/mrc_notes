@@ -1,4 +1,11 @@
 
+# Dependencies
+
+```
+sudo apt update
+sudo apt install nvidia-docker2
+sudo systemctl restart docker
+```
 
 # Image: Build or Download?
 
@@ -9,6 +16,19 @@ https://hub.docker.com/r/tfoote/test_novnc/tags?page=1&ordering=last_updated
 ```
 docker pull tfoote/test_novnc:latest
 ```
+
+```
+docker run --rm -it -p 8080:8080 --gpus all tfoote/test_novnc:main
+
+```
+OR
+```
+docker pull learninglab/me4823:matlab_small
+docker run --rm -it -p 8080:8080 --gpus all learninglab/me4823:matlab_small
+```
+
+
+https://hub.docker.com/u/learninglab
 
 ## Build with docker image 
 
@@ -46,7 +66,8 @@ Specify the desired image and run with rocker
 ```
 IMAGE="test_novnc:local_latest"
 rocker --cuda --nvidia --novnc --turbovnc --user --user-override-name=developer ${IMAGE}
-```
+```&
+
 
 Finally open the UI in a browser: [http://localhost:8080/vnc.html](http://localhost:8080/vnc.html)
 
